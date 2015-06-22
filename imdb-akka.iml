@@ -34,7 +34,6 @@
     <orderEntry type="library" exported="" name="Gradle: com.typesafe.akka:akka-http-xml-experimental_2.11:1.0-M5" level="project" />
     <orderEntry type="library" exported="" name="Gradle: com.typesafe.akka:akka-http-java-jackson-experimental_2.11:1.0-M5" level="project" />
     <orderEntry type="library" exported="" name="Gradle: com.typesafe.akka:akka-http-testkit-experimental_2.11:1.0-M5" level="project" />
-    <orderEntry type="library" exported="" name="Gradle: org.mongodb:mongodb-driver-async:3.0.2" level="project" />
     <orderEntry type="library" exported="" name="Gradle: javax.json:javax.json-api:1.0" level="project" />
     <orderEntry type="library" exported="" name="Gradle: org.glassfish:javax.json:1.0.4" level="project" />
     <orderEntry type="library" exported="" name="Gradle: org.scala-lang:scala-library:2.11.5" level="project" />
@@ -91,5 +90,6 @@
     <orderEntry type="library" scope="TEST" name="Gradle: org.codehaus.groovy:groovy-json:2.4.3" level="project" />
     <orderEntry type="library" scope="TEST" name="Gradle: com.jayway.restassured:rest-assured-common:2.4.1" level="project" />
     <orderEntry type="library" scope="TEST" name="Gradle: org.apache.commons:commons-lang3:3.3.2" level="project" />
+    <orderEntry type="library" exported="" name="Gradle: org.mongodb:mongodb-driver:3.0.2" level="project" />
   </component>
 </module>

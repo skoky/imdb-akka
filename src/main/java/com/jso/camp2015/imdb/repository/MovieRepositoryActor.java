@@ -2,21 +2,21 @@ package com.jso.camp2015.imdb.repository;
 
 import akka.actor.Props;
 import akka.actor.UntypedActor;
+import akka.dispatch.Mapper;
 import akka.event.Logging;
 import akka.event.LoggingAdapter;
 import com.jso.camp2015.imdb.model.Movie;
 import com.mongodb.Function;
-import com.mongodb.async.client.MongoClient;
-import com.mongodb.async.client.MongoClients;
-import com.mongodb.async.client.MongoDatabase;
-import com.mongodb.async.client.MongoIterable;
+import com.mongodb.MongoClient;
+import com.mongodb.client.MongoCursor;
+import com.mongodb.client.MongoDatabase;
+import com.mongodb.client.MongoIterable;
 import org.bson.Document;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
-import static com.mongodb.client.model.Filters.*;
+import static com.mongodb.client.model.Filters.eq;
 
 /**
  * Created by camp2015 on 6/15/15.
@@ -72,17 +72,20 @@ public class MovieRepositoryActor extends UntypedActor {
         if (connectionUrl == null){
             connectionUrl = getContext().system().settings().config().getString("movie.mongodb.url");
         }
-        mongoClient = MongoClients.create(connectionUrl);
+        mongoClient = new MongoClient("localhost");
     }
 
     @Override
     public void onReceive(Object message) throws Exception {
         if (message instanceof ListAllMoviesCommand){
             final List<Movie> movies = new ArrayList<Movie>();
-            final MongoIterable<? extends Movie> result =
-                    db().getCollection("Movie").find().limit(10).map(new MovieDocumentMapper());
-            result.forEach(movie -> movies.add(movie),
-                    (allmovies, throwbale) -> loggingAdapter.debug("ListAllMoviesCommand: "));
+            final MongoIterable<? extends Movie> result=
+                db().getCollection("Movie").find().limit(10).map(new MovieDocumentMapper());
+            MongoCursor<? extends Movie> i = result.iterator();
+            while(i.hasNext()) {
+                movies.add(i.next());
+            }
+//            result.forEach(new ListMapper());
             getSender().tell(movies, getSelf());
         }
         else if (message instanceof MoviesDetailsCommand){
@@ -90,9 +93,9 @@ public class MovieRepositoryActor extends UntypedActor {
             final String id = ((MoviesDetailsCommand)message).getId();
             final MongoIterable<? extends Movie> result =
                     db().getCollection("Movie").find(eq("_id", id)).map(new MovieDocumentMapper());
-            result.forEach(movie -> movies.add(movie),
-                    (allmovies, throwbale) -> loggingAdapter.debug("MoviesDetailsCommand: ")
-            );
+//            result.forEach(movie -> movies.add(movie),
+//                    (allmovies, throwbale) -> loggingAdapter.debug("MoviesDetailsCommand: ")
+//            );
             getSender().tell(movies, getSelf());
         }
     }
@@ -100,5 +103,8 @@ public class MovieRepositoryActor extends UntypedActor {
 
     private MongoDatabase db(){
         return mongoClient.getDatabase(dbInstanceName);
+    }
+
+    private class ListMapper {
     }
 }
